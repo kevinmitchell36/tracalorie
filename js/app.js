@@ -9,7 +9,9 @@ class CalorieTracker {
     this._displayCaloriesTotal();
     this._displayCaloriesCosumed();
     this._displayCaloriesBurned();
-    this._displayCaloriesRemaining() 
+    this._displayCaloriesRemaining();
+    this._displayCaloriesProgress();
+
 
   }
 
@@ -50,18 +52,39 @@ class CalorieTracker {
     caloriesBurnedEl.innerHTML = burned;
   }
 
+  _displayCaloriesRemaining() {
+    const caloriesRemainingEl = document.getElementById('calories-remaining');
+    const remaining = this._calorieLimit - this._totalCalories;
+    const progressEl = document.getElementById('calorie-progress');
+    caloriesRemainingEl.innerHTML = remaining;
+    if (remaining < 0) {
+      caloriesRemainingEl.parentElement.parentElement.classList.remove('bg-light');
+      caloriesRemainingEl.parentElement.parentElement.classList.add('bg-danger');
+      progressEl.classList.remove('bg-success');
+      progressEl.classList.add('bg-danger');
+    } else {
+      caloriesRemainingEl.parentElement.parentElement.classList.remove('bg-danger');
+      caloriesRemainingEl.parentElement.parentElement.classList.add('bg-light');
+      progressEl.classList.remove('bg-danger');
+      progressEl.classList.add('bg-success');
+    }
+  }
+
+  _displayCaloriesProgress() {
+    const progressEl = document.getElementById('calorie-progress');
+    const percentage = (this._totalCalories / this._calorieLimit) * 100;
+    const width = Math.min(percentage, 100);
+    progressEl.style.width = `${width}%`;
+  }
+
   _render() {
     this._displayCaloriesTotal();
     this._displayCaloriesCosumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
+    this._displayCaloriesProgress();
   }
 
-  _displayCaloriesRemaining() {
-    const calriesRemainingEl = document.getElementById('calories-remaining');
-    const remaining = this._calorieLimit - this._totalCalories;
-    calriesRemainingEl.innerHTML = remaining;
-  }
 
 }
 
@@ -84,12 +107,14 @@ class Workout {
 const tracker = new CalorieTracker();
 
 const breakfast = new Meal('Breakfast', 400);
-
 tracker.addMeal(breakfast);
-
 
 const run = new Workout('Morning run', 320);
 tracker.addWorkout(run);
+
+const lunch = new Meal('Lunch', 350);
+tracker.addMeal(lunch);
+
 
 console.log(tracker._totalCalories);
 
